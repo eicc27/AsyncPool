@@ -28,6 +28,6 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/
       - run: npm i
-      - run: npm publish
+      - run: npm publish --access public  # the default is private; it's a public package
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
