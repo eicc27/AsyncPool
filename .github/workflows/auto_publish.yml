@@ -31,4 +31,4 @@ jobs:
       - run: npm i
       - run: npm publish --access public  # the default is private; it's a public package
         env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
