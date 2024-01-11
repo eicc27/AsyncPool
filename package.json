@@ -1,6 +1,6 @@
 {
   "name": "@eicc27/async-pool",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "A TypeScript compatible asynchronous pool offering advanced coroutine scheduling.",
   "main": "dist/AsyncPool.js",
   "types": "dist/AsyncPool.d.ts",
@@ -10,6 +10,6 @@
     "test": "tsc; node dist/example.js"
   },
   "keywords": ["async", "pool", "coroutine", "scheduling", "typescript"],
-  "author": "eicc27(https://github.com/eicc27)",
+  "author": "@eicc27",
   "license": "MIT"
 }
