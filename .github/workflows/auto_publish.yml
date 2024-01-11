@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 20
-      - run: npm i  # it does not have any dependencies, so clean install would not work
+      - run: npm i  # it does not have any dependency, so clean install would not work
       - run: npm test
 
   publish-npm:
