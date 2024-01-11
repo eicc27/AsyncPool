@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 20
-      - run: npm i  # it does not have any dependencies, so clean install would not work
+      - run: npm i  # it does not have any dependency, so clean install would not work
       - run: npm test
 
   publish-npm:
@@ -29,6 +29,6 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: echo $NODE_AUTH_TOKEN
       - run: npm i
-      - run: npm publish
+      - run: npm publish --access public  # the default is private; it's a public package
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
