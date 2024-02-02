@@ -83,12 +83,13 @@ export default class AsyncPool {
     if (this.count)
       console.warn("startTimer is called again before a stopTimer.", "The time of start would refresh.")
     this.count = true;
+    this.counter = 0;
     this.start = process.hrtime();
   }
 
   /**
    * Stops the inner timer in the pool. It reports:
-   * 1. the time elapsed.
+   * 1. the time elapsed in seconds.
    * 2. the total tasks completed.
    * 3. the rate in tasks per second.
    * @param precision Determines how many digits should be kept in floating points.
@@ -121,6 +122,7 @@ export default class AsyncPool {
   ) {
     const task = fn(...args).then(
       () => {
+        if (this.count) this.counter++;
         return index;
       },
       (reason) => {
@@ -135,6 +137,7 @@ export default class AsyncPool {
 
   /**
    * Submits a task to the pool. This would block the main thread until a vacant slot is available.
+   * On the other hand, if the pool is vacant, this method would return immediately, just behaving like a `Promise`.
    * @param fn The task to be submitted.
    * @param args The arguments of the task.
    */

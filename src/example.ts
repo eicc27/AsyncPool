@@ -24,7 +24,7 @@ console.time("timer");
 pool.startTimer();
 await pool.submit(timer, 2000);
 console.log(await pool.isWorking());
-await pool.submit(errorTimer, 1000);
+await pool.submit(timer, 1000);
 await pool.close();
 pool.endTimer();
 console.log(await pool.isWorking());
