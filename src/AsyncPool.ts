@@ -10,13 +10,13 @@ export default class AsyncPool {
 
   /**
    * @param maxWorkers The maximum number of concurrent tasks.
-   * @param errorStrategy The strategy to deal with errors. "eagar" means that the pool would
+   * @param errorStrategy The strategy to deal with errors. "eager" means that the pool would
    * report errors immediately, while "lazy" means that the pool would wait for all tasks to
    * complete before reporting errors.
    */
   constructor(
     private maxWorkers: number,
-    private errorStrategy: "eagar" | "lazy" = "lazy"
+    private errorStrategy: "eager" | "lazy" = "lazy"
   ) {}
 
   /**
@@ -52,6 +52,14 @@ export default class AsyncPool {
     while (await hasPending()) {
       await Promise.all(promises);
     }
+  }
+
+  public async isWorking(): Promise<boolean> {
+    for (const task of this.pool) {
+      const state = await AsyncPool.GetState(task);
+      if (state == "pending") return true;
+    }
+    return false;
   }
 
   private getVacantIndex() {
@@ -108,11 +116,11 @@ export default class AsyncPool {
 
   /**
    * Get all errors that occured during the execution of tasks. If the error strategy is set to
-   * "eagar", this method would return an empty array.
+   * "eager", this method would return an empty array.
    * @returns An array of errors.
    */
   public getErrors() {
-    if (this.errorStrategy == "eagar") {
+    if (this.errorStrategy == "eager") {
       console.warn(
         "Pool strategy is set to report error immediately, getErrors would return an empty array"
       );
