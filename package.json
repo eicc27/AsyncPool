@@ -9,7 +9,16 @@
     "build": "tsc",
     "test": "tsc; node dist/example.js"
   },
-  "keywords": ["async", "pool", "coroutine", "scheduling", "typescript"],
+  "keywords": [
+    "async",
+    "pool",
+    "coroutine",
+    "scheduling",
+    "typescript"
+  ],
   "author": "@eicc27",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^20.11.16"
+  }
 }

@@ -6,6 +6,9 @@
 export default class AsyncPool {
   private pool: Promise<number>[] = [];
   private errors: any[] = [];
+  private counter = 0;
+  private start?: [number, number];
+  private count = false;
   private closed = false;
 
   /**
@@ -54,12 +57,56 @@ export default class AsyncPool {
     }
   }
 
+  /**
+   * Checks whether the pool still has working promise in it.
+   * @returns Promsie<boolean> value, indicating the vacancy of the pool.
+   */
   public async isWorking(): Promise<boolean> {
     for (const task of this.pool) {
       const state = await AsyncPool.GetState(task);
       if (state == "pending") return true;
     }
     return false;
+  }
+
+  /**
+   * Starts the timer in the pool.
+   * The timer is used to calculate the flow of tasks in a given time period.
+   * It is useful for recording the performance.
+   * 
+   * Normally a `startTimer` works with a `stopTimer`, which reports the performance
+   * and stops the operations initiated in `startTimer`.
+   * If consecutive `startTimer`s are called before a `stopTimer`, the time-start
+   * is refreshed.
+   */
+  public startTimer() {
+    if (this.count)
+      console.warn("startTimer is called again before a stopTimer.", "The time of start would refresh.")
+    this.count = true;
+    this.start = process.hrtime();
+  }
+
+  /**
+   * Stops the inner timer in the pool. It reports:
+   * 1. the time elapsed.
+   * 2. the total tasks completed.
+   * 3. the rate in tasks per second.
+   * @param precision Determines how many digits should be kept in floating points.
+   */
+  public endTimer(precision = 3) {
+    if (!this.count)
+      throw new Error("Cannot call endTimer before the timer is started");
+    const timeElapsed = process.hrtime(this.start);
+    const t = timeElapsed[0] + timeElapsed[1] * 1e-9;
+    const r = this.counter / t;
+    console.log(
+      `time ${t.toFixed(precision)}; flow ${this.counter}; rate ${r.toFixed(
+        precision
+      )}`
+    );
+    this.start = undefined;
+    this.count = false;
+    this.counter = 0;
   }
 
   private getVacantIndex() {
@@ -79,6 +126,7 @@ export default class AsyncPool {
       (reason) => {
         if (this.errorStrategy == "lazy") this.errors.push(reason);
         else throw reason;
+        if (this.count) this.counter++;
         return index;
       }
     );

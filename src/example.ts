@@ -21,10 +21,12 @@ function errorTimer(ms: number) {
 
 const pool = new AsyncPool(5, "lazy");
 console.time("timer");
+pool.startTimer();
 await pool.submit(timer, 2000);
 console.log(await pool.isWorking());
 await pool.submit(errorTimer, 1000);
 await pool.close();
+pool.endTimer();
 console.log(await pool.isWorking());
 console.timeEnd("timer");
 console.log(pool.getErrors());
